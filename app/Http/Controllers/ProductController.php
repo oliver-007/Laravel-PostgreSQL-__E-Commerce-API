@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductRequest;
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -12,7 +14,7 @@ class ProductController
      */
     public function index()
     {
-        //
+        
     }
 
     /**
@@ -26,9 +28,13 @@ class ProductController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
-        //
+        $product = Product::create($request->validated());
+        return (new ProductResource($product))->additional([
+            'success'=>true,
+            'message'=> 'Product created successfully',
+        ]);
     }
 
     /**

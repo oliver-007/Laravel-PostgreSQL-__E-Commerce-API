@@ -15,7 +15,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories =  Category::latest()->paginate(5);
+        $categories =  Category::latest('')->paginate(5);
         return CategoryResource::collection($categories)->additional([
             'success'=>true,
             'message'=> 'Category fetched successfully',
@@ -36,7 +36,7 @@ class CategoryController extends Controller
     public function store(CategoryRequest $request)
     {
         $category = Category::create($request->validated());
-            return new CategoryResource($category)->additional([
+            return (new CategoryResource($category))->additional([
                 'success'=>true,
                 'message'=> 'Category created successfully'
             ]);
@@ -47,7 +47,7 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        return new CategoryResource($category)->additional([
+        return (new CategoryResource($category))->additional([
             'success'=>true,
             'message'=>"{$category->name} category fetched successfully",
         ]);
@@ -68,7 +68,7 @@ class CategoryController extends Controller
     {
      $category->update($request->validated());
 
-        return new CategoryResource($category)->additional([
+        return (new CategoryResource($category))->additional([
             'success'=>true,
             'message'=> 'Category updated successfully',
         ]);
@@ -84,7 +84,7 @@ class CategoryController extends Controller
 
         $category->delete();
 
-        return new CategoryResource($deletedCategory)->additional([
+        return (new CategoryResource($deletedCategory))->additional([
             'success'=>true,
             'message'=> " {$deletedCategory->name} is deleted successfully ",
         ]);
