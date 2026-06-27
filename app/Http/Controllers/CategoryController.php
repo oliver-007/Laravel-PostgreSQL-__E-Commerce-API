@@ -15,7 +15,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories =  Category::latest('')->paginate(5);
+        $categories =  Category::latest()->paginate(5);
         return CategoryResource::collection($categories)->additional([
             'success'=>true,
             'message'=> 'Category fetched successfully',
