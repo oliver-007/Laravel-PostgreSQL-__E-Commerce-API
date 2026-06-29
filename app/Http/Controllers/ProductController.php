@@ -67,6 +67,8 @@ class ProductController
      */
     public function show(Product $product)
     {
+        $product->load('category');
+        
         return (new ProductResource($product))->additional([
             'success'=> true,
             "message"=>" {$product->name} is loaded successfully  "
