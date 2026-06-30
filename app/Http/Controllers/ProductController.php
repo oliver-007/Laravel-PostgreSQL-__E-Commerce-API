@@ -6,8 +6,9 @@ use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 
-class ProductController
+class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -71,7 +72,7 @@ class ProductController
         
         return (new ProductResource($product))->additional([
             'success'=> true,
-            "message"=>" {$product->name} is loaded successfully  "
+            "message"=>" {$product->name} is fetched successfully  "
         ]);
     }
 
@@ -90,7 +91,7 @@ class ProductController
     {
         $validatedRequest = $request->validated();
        $product->update($validatedRequest);
-
+        $product->load('category');
 return (new ProductResource($product))->additional([
     'success'=>true,
     'message'=> " {$product->name} is updated successfully "
@@ -104,11 +105,10 @@ return (new ProductResource($product))->additional([
      */
     public function destroy(Product $product)
     {
-        $destroyedProduct = $product;
          $product->delete();
     return response()->json([
         'success'=>true,
-        'message'=> " {$destroyedProduct->name} is destroyed successfully "
+        'message'=> " {$product->name} is deleted successfully "
     ]);
     }
 }

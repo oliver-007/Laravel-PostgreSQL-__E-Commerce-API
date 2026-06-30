@@ -21,7 +21,7 @@ class ProductResource extends JsonResource
         'stock'       => $this->stock,
         'description' => $this->description,
         'category'=> new CategoryResource($this->whenLoaded('category')) ,
-        'created_at'  => $this->created_at,
+        'created_at'  => $this->created_at->format('D-m-y H:i:s'),
     ];
     }
 }

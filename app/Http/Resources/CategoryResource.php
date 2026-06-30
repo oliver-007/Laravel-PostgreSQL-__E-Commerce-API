@@ -17,7 +17,8 @@ class CategoryResource extends JsonResource
         return [
             'id'=> $this->id,
             'name'=> $this->name,
-            'created_at'=> $this->created_at->format('d M Y'),
+            'created_at'=> $this->created_at->format('D-m-y  H:i:s'),
+            // 'products'=> ProductResource::collection($this->whenLoaded('products'))
         ];
     }
 }
