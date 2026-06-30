@@ -103,7 +103,7 @@ return (new ProductResource($product))->additional([
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $product)
+    public function destroy(ProductResource $product)
     {
          $product->delete();
     return response()->json([
