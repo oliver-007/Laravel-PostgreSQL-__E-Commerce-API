@@ -16,29 +16,30 @@ class ProductController extends Controller
     public function index(Request $request)
     {
 
-    // $request->validate([
-    //     'per_page'=>'nullable|integer|min:1|max:100'
-    // ]);
+        // $request->validate([
+        //     'per_page'=>'nullable|integer|min:1|max:100'
+        // ]);
 
-    // $perPage = $request->input('per_page', 10);
-    
-    // OR
-    
-    $validated  = $request->validate([
-        'per_page' => [
-            'nullable',
-            'integer',
-            'min:1',
-            'max:100'
-        ]
-    ]);
+        // $perPage = $request->input('per_page', 10);
+
+        // OR
+
+        $validated = $request->validate([
+            'per_page' => [
+                'nullable',
+                'integer',
+                'min:1',
+                'max:100',
+            ],
+        ]);
 
         $perPage = $validated['per_page'] ?? 10;
 
-        $products = Product::with('category')->latest()->paginate($perPage) ;
-        return  ProductResource::collection($products) ->additional([
-            'success'=> true,
-            'message'=> 'All Products with catgegory name fetched successfully'
+        $products = Product::with('category')->latest()->paginate($perPage);
+
+        return ProductResource::collection($products)->additional([
+            'success' => true,
+            'message' => 'All Products with catgegory name fetched successfully',
         ]);
     }
 
@@ -57,9 +58,10 @@ class ProductController extends Controller
     {
         $product = Product::create($request->validated());
         $product->load('category');
+
         return (new ProductResource($product))->additional([
-            'success'=>true,
-            'message'=> 'Product created successfully',
+            'success' => true,
+            'message' => 'Product created successfully',
         ]);
     }
 
@@ -69,10 +71,10 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         $product->load('category');
-        
+
         return (new ProductResource($product))->additional([
-            'success'=> true,
-            "message"=>" {$product->name} is fetched successfully  "
+            'success' => true,
+            'message' => " {$product->name} is fetched successfully  ",
         ]);
     }
 
@@ -90,25 +92,26 @@ class ProductController extends Controller
     public function update(ProductRequest $request, Product $product)
     {
         $validatedRequest = $request->validated();
-       $product->update($validatedRequest);
+        $product->update($validatedRequest);
         $product->load('category');
-return (new ProductResource($product))->additional([
-    'success'=>true,
-    'message'=> " {$product->name} is updated successfully "
-]);
 
+        return (new ProductResource($product))->additional([
+            'success' => true,
+            'message' => " {$product->name} is updated successfully ",
+        ]);
 
-       }
+    }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(ProductResource $product)
     {
-         $product->delete();
-    return response()->json([
-        'success'=>true,
-        'message'=> " {$product->name} is deleted successfully "
-    ]);
+        $product->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => " {$product->name} is deleted successfully ",
+        ]);
     }
 }

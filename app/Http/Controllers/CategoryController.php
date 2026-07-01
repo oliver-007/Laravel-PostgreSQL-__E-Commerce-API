@@ -7,7 +7,6 @@ use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Routing\Controller;
 
-
 class CategoryController extends Controller
 {
     /**
@@ -15,10 +14,11 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories =  Category::latest()->paginate(5);
+        $categories = Category::latest()->paginate(5);
+
         return CategoryResource::collection($categories)->additional([
-            'success'=>true,
-            'message'=> 'Category fetched successfully',
+            'success' => true,
+            'message' => 'Category fetched successfully',
         ]);
     }
 
@@ -36,10 +36,11 @@ class CategoryController extends Controller
     public function store(CategoryRequest $request)
     {
         $category = Category::create($request->validated());
-            return (new CategoryResource($category))->additional([
-                'success'=>true,
-                'message'=> 'Category created successfully'
-            ]);
+
+        return (new CategoryResource($category))->additional([
+            'success' => true,
+            'message' => 'Category created successfully',
+        ]);
     }
 
     /**
@@ -48,8 +49,8 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         return (new CategoryResource($category))->additional([
-            'success'=>true,
-            'message'=>"{$category->name} category fetched successfully",
+            'success' => true,
+            'message' => "{$category->name} category fetched successfully",
         ]);
     }
 
@@ -66,11 +67,11 @@ class CategoryController extends Controller
      */
     public function update(CategoryRequest $request, Category $category)
     {
-     $category->update($request->validated());
+        $category->update($request->validated());
 
         return (new CategoryResource($category))->additional([
-            'success'=>true,
-            'message'=> 'Category updated successfully',
+            'success' => true,
+            'message' => 'Category updated successfully',
         ]);
     }
 
@@ -80,13 +81,13 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
 
-    $deletedCategory = $category;
+        $deletedCategory = $category;
 
         $category->delete();
 
         return response()->json([
-            'success'=>true,
-            'message'=> " {$deletedCategory->name} is deleted successfully ",
+            'success' => true,
+            'message' => " {$deletedCategory->name} is deleted successfully ",
         ]);
 
     }

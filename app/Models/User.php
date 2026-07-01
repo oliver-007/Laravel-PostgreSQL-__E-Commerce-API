@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
 {
+    protected $fillable = [
+        'name',
+        'mail',
+        'password',
+    ];
 
-protected $fillable = [
-    'name',
-    'mail',
-    'password'
-];
-    public function orders(){
+    public function orders()
+    {
         return $this->hasMany(Order::class);
     }
 }
