@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\OrderRequest;
 use App\Models\Order_Item;
+use App\Models\OrderItem;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrderItemController
 {
@@ -26,15 +30,21 @@ class OrderItemController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(OrderRequest $request)
     {
-        //
+        $validated = $request->validated();
+        DB::transaction(function () use ($validated) {
+    $totalAmount = 0;
+    foreach ($validated['items'] as $item) {
+        $product= Product::findOrFail($item['product_id']) ;
+    }
+        }  );
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Order_Item $order_Item)
+    public function show(OrderItem $orderItem)
     {
         //
     }
@@ -42,7 +52,7 @@ class OrderItemController
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Order_Item $order_Item)
+    public function edit(OrderItem $orderItem)
     {
         //
     }
@@ -50,7 +60,7 @@ class OrderItemController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Order_Item $order_Item)
+    public function update(Request $request, OrderItem $orderItem)
     {
         //
     }
@@ -58,7 +68,7 @@ class OrderItemController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Order_Item $order_Item)
+    public function destroy(OrderItem $orderItem)
     {
         //
     }
