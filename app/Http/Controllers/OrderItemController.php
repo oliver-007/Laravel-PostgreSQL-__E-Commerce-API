@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\OrderRequest;
 use App\Models\OrderItem;
-use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class OrderItemController
 {
@@ -31,23 +29,7 @@ class OrderItemController
      */
     public function store(OrderRequest $request)
     {
-        $validated = $request->validated();
-        DB::transaction(function () use ($validated) {
-            $totalAmount = 0;
-            foreach ($validated['items'] as $item) {
-                $product = Product::findOrFail($item['product_id']);
-
-                if ($product->stock < $item['quantity']) {
-                    throw new \Exception(
-                        "{$product->name} is out of stock. "
-                    );
-                }
-
-                // Sub-Total
-                $subtotal = $product->price * $item['quantity'];
-                $totalAmount += $subtotal;
-            }
-        });
+        //
     }
 
     /**
