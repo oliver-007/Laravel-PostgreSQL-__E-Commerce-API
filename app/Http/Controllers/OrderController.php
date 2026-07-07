@@ -38,20 +38,14 @@ class OrderController
             $totalAmount = 0;
             foreach ($validated['items'] as $item) {
                 $product = Product::findOrFail($item['product_id']);
-
                 if ($product->stock < $item['quantity']) {
-                    throw new Exception(
-                        "{$product->name} is out of stock. "
-                    );
+                    throw new Exception("{$product->name} is out of stock ");
                 }
-
-                // Sub-Total
                 $subtotal = $product->price * $item['quantity'];
                 $totalAmount += $subtotal;
-
             }
 
-            // Create the Order
+            // Create Order
             $order = Order::create([
                 'user_id' => $validated['user_id'],
                 'total_amount' => $totalAmount,
@@ -59,10 +53,8 @@ class OrderController
 
             ]);
 
-            // Create OrderItem
+            // Create OrderItems
             foreach ($validated['items'] as $item) {
-                // create order item
-
                 $product = Product::findOrFail($item['product_id']);
                 $subtotal = $product->price * $item['quantity'];
 
@@ -77,7 +69,6 @@ class OrderController
 
             }
 
-            // Load relationships for response
             $order->load([
                 'user',
                 'orderItems.product',
@@ -87,9 +78,9 @@ class OrderController
 
         });
 
-        return (new OrderResource($order))->additional([
+        return new OrderResource($order)->additional([
             'success' => true,
-            'message' => 'Order created successfully',
+            'message' => 'Order created Successfully',
         ]);
     }
 
