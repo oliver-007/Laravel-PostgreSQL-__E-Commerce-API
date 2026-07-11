@@ -95,6 +95,7 @@ class OrderController
 
     {
         $validated = $request->validated();
+<<<<<<< HEAD
         $order = DB::transaction(function () use($validated){
             $totalAmount  =0;
             foreach($validated['items'] as $item){
@@ -111,6 +112,20 @@ $totalAmount += $subtotal;
             }
 
             // Create the Order 
+=======
+        $order = DB::transaction(function () use ($validated) {
+            $totalAmount = 0;
+            foreach ($validated['items'] as $item) {
+                $product = Product::findOrFail($item['product_id']);
+                if ($product->stock < $item['quantity']) {
+                    throw new Exception("{$product->name} is out of stock ");
+                }
+                $subtotal = $product->price * $item['quantity'];
+                $totalAmount += $subtotal;
+            }
+
+            // Create Order
+>>>>>>> 73fa06623f4e791629ac13f1745170a6e970c561
             $order = Order::create([
                 'user_id' => $validated['user_id'],
                 'total_amount' => $totalAmount,
@@ -120,9 +135,41 @@ $totalAmount += $subtotal;
 foreach($validated['items'] as $item){
     
 
+<<<<<<< HEAD
 }
 
         });
+=======
+            // Create OrderItems
+            foreach ($validated['items'] as $item) {
+                $product = Product::findOrFail($item['product_id']);
+                $subtotal = $product->price * $item['quantity'];
+
+                $order->orderItems()->create([
+                    'product_id' => $product->id,
+                    'quantity' => $item['quantity'],
+                    'unit_price' => $product->price,
+                    'subtotal' => $subtotal,
+                ]);
+
+                $product->decrement('stock', $item['quantity']);
+
+            }
+
+            $order->load([
+                'user',
+                'orderItems.product',
+            ]);
+
+            return $order;
+
+        });
+
+        return new OrderResource($order)->additional([
+            'success' => true,
+            'message' => 'Order created Successfully',
+        ]);
+>>>>>>> 73fa06623f4e791629ac13f1745170a6e970c561
     }
     /**
      * Display the specified resource.
