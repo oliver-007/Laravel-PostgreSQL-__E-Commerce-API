@@ -28,39 +28,40 @@ class AuthController extends Controller
             'success' => true,
             'message' => 'Registration successful',
             'data' => [
-                    'user' => new UserResource($user),
-                     'access_token' => $token,
-            'token_type' => 'Bearer',
+                'user' => new UserResource($user),
+                'access_token' => $token,
+                'token_type' => 'Bearer',
             ],
-           
+
         ], 201);
 
     }
 
-    public function login(LoginRequest $request):JsonResponse{
-// Find the user by mail
-    $user = User::query()-> where('email', $request->email)->first();
+    public function login(LoginRequest $request): JsonResponse
+    {
+        // Find the user by mail
+        $user = User::query()->where('email', $request->email)->first();
 
-    // Check if user exists and the passwrod is correct
-    if(!$user || !Hash::check($request->password, $user->password)){
+        // Check if user exists and the passwrod is correct
+        if (! $user || ! Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid credentials provided',
+            ], 401);
+        }
+
+        // Generate a new token for this session
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        // Return success response with data
         return response()->json([
-            'success'=> false,
-            'message'=>'Invalid credentials provided',
-        ],401);
-    }
-
-    // Generate a new token for this session
-    $token = $user->createToken('auth_token')->plainTextToken;
-
-    // Return success response with data
-return response()->json([
-    'success'=> true,
-    'message'=> "Login Successful",
-    'data' => [
-        'user'=> new UserResource($user),
-         'access_token' => $token,
-            'token_type' => 'Bearer',
-    ]
-]);
+            'success' => true,
+            'message' => 'Login Successful',
+            'data' => [
+                'user' => new UserResource($user),
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+            ],
+        ]);
     }
 }
