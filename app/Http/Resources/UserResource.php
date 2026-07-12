@@ -9,8 +9,7 @@ class UserResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
+
      */
     public function toArray(Request $request): array
     {
@@ -18,6 +17,10 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
+
+            // Dynamically check if a user is an admin 
+            'is_admin' => $this->email=== 'admin@gmail.com',
+            'created_at'=> $this->created_at->toIso8601String(),
         ];
     }
 }

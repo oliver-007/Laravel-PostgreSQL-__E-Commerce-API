@@ -31,7 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Authenticated Write Actions (Create, Update, Delete)
     Route::apiResource('categories', CategoryController::class)->except(['index', 'show']);
     Route::apiResource('products', ProductController::class)->except(['index', 'show']);
-    
+
     // Orders are fully private (a user must be logged in to buy or see history)
     Route::apiResource('orders', OrderController::class);
 });
