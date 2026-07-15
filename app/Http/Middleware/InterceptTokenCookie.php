@@ -8,17 +8,18 @@ use Symfony\Component\HttpFoundation\Response;
 
 class InterceptTokenCookie
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  Closure(Request): (Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
-        // If the request has our secure access_token cookie but no Bearer header, inject it!
-        if ($request->hasCookie('access_token') && !$request->headers->has('Authorization')) {
-            $request->headers->set('Authorization', 'Bearer ' . $request->cookie('access_token'));
+        // Use request()->cookie() to pull the automatically decrypted value
+        $cookieToken = request()->cookie('access_token');
+
+        if ($cookieToken && !$request->headers->has('Authorization')) {
+            // URL decode to turn %7C back into a literal | character
+            $rawToken = urldecode($cookieToken);
+
+            $request->headers->set('Authorization', 'Bearer ' . $rawToken);
         }
+
         return $next($request);
     }
 }
