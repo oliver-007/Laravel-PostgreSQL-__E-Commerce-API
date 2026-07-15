@@ -4,7 +4,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Middleware\InterceptTokenCookie;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -16,14 +18,14 @@ Route::apiResource('categories', CategoryController::class)->only(['index', 'sho
 Route::apiResource('products', ProductController::class)->only(['index', 'show']);
 
 Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 /*
 |--------------------------------------------------------------------------
 | Protected Routes (Requires valid Bearer Token)
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware([ InterceptTokenCookie::class ,  'auth:sanctum'])->group(function () {
     // User profile & session management
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);

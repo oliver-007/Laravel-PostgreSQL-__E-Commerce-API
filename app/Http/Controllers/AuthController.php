@@ -7,11 +7,31 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    // Helper method to generate a secure production-grade HttpOnly cookie.
+
+    private function generateTokenCookie(string $token)
+    {
+        return Cookie(
+            'access_token',
+            $token,
+            120,
+            '/',
+            config('session.domain'),
+            config('session.secure'),
+            true,
+            false,
+            'lax'
+        );
+    }
+
+    // User Registration
     public function register(RegisterRequest $request): JsonResponse
     {
         $user = User::create([
@@ -22,6 +42,7 @@ class AuthController extends Controller
 
         // Generate a Sanctum token for this specific user session
         $token = $user->createToken('auth_token')->plainTextToken;
+        $cookie = $this->generateTokenCookie($token);
 
         // Return the user payload alongside the Bearer token
         return response()->json([
@@ -29,11 +50,9 @@ class AuthController extends Controller
             'message' => 'Registration successful',
             'data' => [
                 'user' => new UserResource($user),
-                'access_token' => $token,
-                'token_type' => 'Bearer',
             ],
 
-        ], 201);
+        ], 201)->withCookie($cookie);
 
     }
 
@@ -52,6 +71,7 @@ class AuthController extends Controller
 
         // Generate a new token for this session
         $token = $user->createToken('auth_token')->plainTextToken;
+        $cookie = $this->generateTokenCookie($token);
 
         // Return success response with data
         return response()->json([
@@ -59,9 +79,20 @@ class AuthController extends Controller
             'message' => 'Login Successful',
             'data' => [
                 'user' => new UserResource($user),
-                'access_token' => $token,
-                'token_type' => 'Bearer',
             ],
-        ]);
+        ], 200)->withCookie($cookie);
+    }
+
+    public function logout(Request $request): JsonResponse
+    {
+        // Revoke the token record inside the database
+        $request->auth()->user()->currentAccessToken()->delete();
+
+        $forgetCookie = Cookie::forget('access_token');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Successfully logged out. Token revoked.',
+        ], 200)->withCookie($forgetCookie);
     }
 }
