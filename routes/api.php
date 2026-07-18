@@ -4,9 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
-use App\Http\Middleware\InterceptTokenCookie;
 use Illuminate\Support\Facades\Route;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -25,10 +23,7 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 | Protected Routes (Requires valid Bearer Token)
 |--------------------------------------------------------------------------
 */
-Route::middleware([ InterceptTokenCookie::class ,  'auth:sanctum'])->group(function () {
-    // User profile & session management
-    Route::get('/me', [AuthController::class, 'me']);
-    Route::post('/logout', [AuthController::class, 'logout']);
+Route::middleware( 'auth:sanctum')->group(function () {
 
     // Authenticated Write Actions (Create, Update, Delete)
     Route::apiResource('categories', CategoryController::class)->except(['index', 'show']);
@@ -36,4 +31,9 @@ Route::middleware([ InterceptTokenCookie::class ,  'auth:sanctum'])->group(funct
 
     // Orders are fully private (a user must be logged in to buy or see history)
     Route::apiResource('orders', OrderController::class);
+
+    Route::post('/logout', [AuthController::class, 'logout']);
+
+    Route::get('/me', [AuthController::class, 'me']);
+
 });

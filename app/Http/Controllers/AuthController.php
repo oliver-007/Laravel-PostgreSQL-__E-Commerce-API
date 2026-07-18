@@ -86,8 +86,8 @@ class AuthController extends Controller
     public function logout(Request $request): JsonResponse
     {
         // Revoke the token record inside the database
-        $user = $request->user();
-        $user()->currentAccessToken()->delete();
+
+        $request->user()->currentAccessToken()->delete();
 
         $forgetCookie = Cookie::forget('access_token');
 

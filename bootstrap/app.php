@@ -15,6 +15,10 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
 
+        // Disable encryption for our authentication cookie
+        $middleware->encryptCookies(except: [
+            'access_token',
+        ]);
         $middleware->statefulApi();
 
         $middleware->alias([
