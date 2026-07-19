@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
@@ -86,8 +87,22 @@ class AuthController extends Controller
     public function logout(Request $request): JsonResponse
     {
         // Revoke the token record inside the database
+        $user = $request->user();
 
-        $request->user()->currentAccessToken()->delete();
+        if (! $user) {
+            $cookieToken = $request->cookie('access_token');
+            if ($cookieToken) {
+                $cleanToken = urldecode($cookieToken);
+                $accessToken = PersonalAccessToken::findToken($cleanToken);
+                if ($accessToken) {
+                    $user = $accessToken->tokenable;
+                    $accessToken->delete();
+                }
+            }
+
+        } else {
+            $request->user()->currentAccessToken()->delete();
+        }
 
         $forgetCookie = Cookie::forget('access_token');
 
@@ -95,5 +110,17 @@ class AuthController extends Controller
             'success' => true,
             'message' => 'Successfully logged out. Token revoked.',
         ], 200)->withCookie($forgetCookie);
+    }
+
+    public function me(Request $request): JsonResponse
+    {
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Fetched User Details Successfully ..',
+            'data' => [
+                'user' => new UserResource($request->user()),
+            ],
+        ], 200);
     }
 }
