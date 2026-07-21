@@ -43,10 +43,18 @@ return [
             'provider' => 'users',
         ],
     ],
+<<<<<<< HEAD
     'sanctum' => [
         'driver' => 'sanctum',
         'provider' => 'users',
     ],
+=======
+ // Add this block so Laravel knows where to route the middleware
+        'sanctum' => [
+            'driver' => 'sanctum',
+            'provider' => 'users',
+        ],
+>>>>>>> 3b21b59f4a9cf7d24971ce885aef9cbe15150853
     /*
     |--------------------------------------------------------------------------
     | User Providers

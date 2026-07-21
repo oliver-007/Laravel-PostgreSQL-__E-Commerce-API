@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 // use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
@@ -113,6 +114,7 @@ class AuthController extends Controller
 
     public function logout(Request $request): JsonResponse
     {
+<<<<<<< HEAD
 
         $user = $request->user();
         if (! $user) {
@@ -120,6 +122,24 @@ class AuthController extends Controller
                 'success' => false,
                 'message' => 'Unauthenticated.',
             ], 401);
+=======
+        // Revoke the token record inside the database
+        $user = $request->user();
+
+        if (! $user) {
+            $cookieToken = $request->cookie('access_token');
+            if ($cookieToken) {
+                $cleanToken = urldecode($cookieToken);
+                $accessToken = PersonalAccessToken::findToken($cleanToken);
+                if ($accessToken) {
+                    $user = $accessToken->tokenable;
+                    $accessToken->delete();
+                }
+            }
+
+        } else {
+            $request->user()->currentAccessToken()->delete();
+>>>>>>> 3b21b59f4a9cf7d24971ce885aef9cbe15150853
         }
 
         if ($request->boolean('all_devices')) {
@@ -167,6 +187,18 @@ class AuthController extends Controller
             'message' => 'Fetched user details successfully',
             'data' => [
                 'user' => new UserResource($user),
+            ],
+        ], 200);
+    }
+
+    public function me(Request $request): JsonResponse
+    {
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Fetched User Details Successfully ..',
+            'data' => [
+                'user' => new UserResource($request->user()),
             ],
         ], 200);
     }
