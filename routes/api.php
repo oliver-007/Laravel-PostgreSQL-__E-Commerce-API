@@ -23,7 +23,7 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 | Protected Routes (Requires valid Bearer Token)
 |--------------------------------------------------------------------------
 */
-Route::middleware( 'auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
 
     // Authenticated Write Actions (Create, Update, Delete)
     Route::apiResource('categories', CategoryController::class)->except(['index', 'show']);
