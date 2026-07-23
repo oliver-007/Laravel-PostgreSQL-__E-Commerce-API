@@ -39,7 +39,7 @@ class AuthController extends Controller
     {
         // Find the user by mail
         $user = User::query()->where('email', $request->email)->first();
-        
+
         // Check if user exists and the password is correct
         if (! $user || ! Hash::check($request->password, $user->password)) {
             return response()->json([
