@@ -8,9 +8,10 @@ use App\Models\Order;
 use App\Models\Product;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 
-class OrderController
+class OrderController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -32,115 +33,32 @@ class OrderController
      * Store a newly created resource in storage.
      */
     public function store(OrderRequest $request)
-    // {
-    //     $validated = $request->validated();
-    //     $order = DB::transaction(function () use ($validated) {
-    //         $totalAmount = 0;
-    //         foreach ($validated['items'] as $item) {
-    //             $product = Product::findOrFail($item['product_id']);
-
-    //             if ($product->stock < $item['quantity']) {
-    //                 throw new Exception(
-    //                     "{$product->name} is out of stock. "
-    //                 );
-    //             }
-
-    //             // Sub-Total
-    //             $subtotal = $product->price * $item['quantity'];
-    //             $totalAmount += $subtotal;
-
-    //         }
-
-    //         // Create the Order
-    //         $order = Order::create([
-    //             'user_id' => $validated['user_id'],
-    //             'total_amount' => $totalAmount,
-    //             'status' => 'pending',
-
-    //         ]);
-
-    //         // Create OrderItem
-    //         foreach ($validated['items'] as $item) {
-    //             // create order item
-
-    //             $product = Product::findOrFail($item['product_id']);
-    //             $subtotal = $product->price * $item['quantity'];
-
-    //             $order->orderItems()->create([
-    //                 'product_id' => $product->id,
-    //                 'quantity' => $item['quantity'],
-    //                 'unit_price' => $product->price,
-    //                 'subtotal' => $subtotal,
-    //             ]);
-
-    //             $product->decrement('stock', $item['quantity']);
-
-    //         }
-
-    //         // Load relationships for response
-    //         $order->load([
-    //             'user',
-    //             'orderItems.product',
-    //         ]);
-
-    //         return $order;
-
-    //     });
-
-    //     return (new OrderResource($order))->additional([
-    //         'success' => true,
-    //         'message' => 'Order created successfully',
-    //     ]);
-    // }
-
     {
         $validated = $request->validated();
-<<<<<<< HEAD
-        $order = DB::transaction(function () use($validated){
-            $totalAmount  =0;
-            foreach($validated['items'] as $item){
-$product = Product::findOrFail( $item['product_id']);
-// Stock check
-if($product->stock < $item['quantity'] ){
-    throw new Exception("{$product->name} is out of stock");
-}
 
-// Subtotal calculation
-$subtotal = $product->price * $item['quantity'];
-// $totalAmount = $totalAmount + $subtotal;
-$totalAmount += $subtotal;
-            }
-
-            // Create the Order 
-=======
         $order = DB::transaction(function () use ($validated) {
             $totalAmount = 0;
+
+            // Check stock and calculate total
             foreach ($validated['items'] as $item) {
                 $product = Product::findOrFail($item['product_id']);
+
                 if ($product->stock < $item['quantity']) {
-                    throw new Exception("{$product->name} is out of stock ");
+                    throw new Exception("{$product->name} is out of stock.");
                 }
+
                 $subtotal = $product->price * $item['quantity'];
                 $totalAmount += $subtotal;
             }
 
             // Create Order
->>>>>>> 73fa06623f4e791629ac13f1745170a6e970c561
             $order = Order::create([
                 'user_id' => $validated['user_id'],
                 'total_amount' => $totalAmount,
                 'status' => 'pending',
             ]);
-// Create OrderItem
-foreach($validated['items'] as $item){
-    
 
-<<<<<<< HEAD
-}
-
-        });
-=======
-            // Create OrderItems
+            // Create OrderItems & decrement stock
             foreach ($validated['items'] as $item) {
                 $product = Product::findOrFail($item['product_id']);
                 $subtotal = $product->price * $item['quantity'];
@@ -153,7 +71,6 @@ foreach($validated['items'] as $item){
                 ]);
 
                 $product->decrement('stock', $item['quantity']);
-
             }
 
             $order->load([
@@ -162,15 +79,14 @@ foreach($validated['items'] as $item){
             ]);
 
             return $order;
-
         });
 
-        return new OrderResource($order)->additional([
+        return (new OrderResource($order))->additional([
             'success' => true,
-            'message' => 'Order created Successfully',
+            'message' => 'Order created successfully.',
         ]);
->>>>>>> 73fa06623f4e791629ac13f1745170a6e970c561
     }
+
     /**
      * Display the specified resource.
      */
