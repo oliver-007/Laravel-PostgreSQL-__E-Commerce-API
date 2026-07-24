@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
@@ -48,5 +49,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/products/{product}', [ProductController::class, 'update']);
         Route::delete('/products/{product}', [ProductController::class, 'destroy']);
     });
+
+  // Cart Routes
+        Route::get('/cart', [CartController::class, 'index']);
+        Route::post('/cart/items', [CartController::class, 'store']);
+        Route::put('/cart/items/{cartItem}', [CartController::class, 'update']);
+        Route::delete('/cart/items/{cartItem}', [CartController::class, 'destroy']);
+        Route::delete('/cart', [CartController::class, 'clear']);
 
 });
