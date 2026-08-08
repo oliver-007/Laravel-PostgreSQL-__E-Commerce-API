@@ -19,8 +19,12 @@ class CartRequest extends FormRequest
      */
     public function rules(): array
     {
+
+        // Requir product_id on POST ,  but optional on PUT/PATCH
+        $productIdRule = $this->isMethod('post') ? ['required'] : ['nullable'];
+
         return [
-            'product_id' => ['required', 'exists:products,id'],
+            'product_id' => array_merge($productIdRule, ['exists:products,id']),
             'quantity' => ['required', 'integer', 'min:1'],
         ];
     }

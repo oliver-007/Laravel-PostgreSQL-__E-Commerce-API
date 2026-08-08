@@ -50,11 +50,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/products/{product}', [ProductController::class, 'destroy']);
     });
 
-  // Cart Routes
-        Route::get('/cart', [CartController::class, 'index']);
-        Route::post('/cart/items', [CartController::class, 'store']);
-        Route::put('/cart/items/{cartItem}', [CartController::class, 'update']);
-        Route::delete('/cart/items/{cartItem}', [CartController::class, 'destroy']);
-        Route::delete('/cart', [CartController::class, 'clear']);
+    // Cart Routes
+    Route::get('/cart', [CartController::class, 'index']);
+    Route::post('/cart/items', [CartController::class, 'store']);
+    Route::put('/cart/items/{cartItem}', [CartController::class, 'update']);
+    Route::delete('/cart/items/{cartItem}', [CartController::class, 'destroy']);
+    Route::delete('/cart', [CartController::class, 'clear']);
 
 });

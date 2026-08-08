@@ -54,18 +54,14 @@ class CartController extends Controller
     /**
      * Update quantity of a specific cart item
      */
-    public function update(Request $request, CartItem $cartItem)
+    public function update(CartItemRequest $request, CartItem $cartItem)
     {
         // Ensure user owns this cart item
         if ($cartItem->cart->user_id !== $request->user()->id) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $validated = $request->validate([
-            'quantity' => 'required|integer|min:1',
-        ]);
-
-        $cartItem->update(['quantity' => $validated['quantity']]);
+        $cartItem->update($request->validated());
 
         return response()->json([
             'success' => true,
@@ -78,6 +74,7 @@ class CartController extends Controller
      */
     public function destroy(Request $request, CartItem $cartItem)
     {
+
         if ($cartItem->cart->user_id !== $request->user()->id) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
