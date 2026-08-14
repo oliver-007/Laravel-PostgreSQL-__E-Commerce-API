@@ -20,13 +20,13 @@ class CartRequest extends FormRequest
     public function rules(): array
     {
         // product_id is required when creating (POST), but optional when updating (PUT/PATCH)
-        $productIdRules = $this->isMethod('post') 
-            ? ['required', 'exists:products,id'] 
+        $productIdRules = $this->isMethod('post')
+            ? ['required', 'exists:products,id']
             : ['sometimes', 'exists:products,id'];
 
         return [
             'product_id' => $productIdRules,
-            'quantity'   => ['required', 'integer', 'min:1'],
+            'quantity' => ['required', 'integer', 'min:1'],
         ];
     }
 }

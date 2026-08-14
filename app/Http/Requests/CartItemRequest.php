@@ -18,7 +18,7 @@ class CartItemRequest extends FormRequest
 
         return [
             'product_id' => array_merge($productIdRule, ['exists:products,id']),
-            'quantity'   => ['required', 'integer', 'min:1'],
+            'quantity' => ['required', 'integer', 'min:1'],
         ];
     }
 }
