@@ -20,7 +20,7 @@ class ProductController extends Controller
             'per_page' => 'nullable|integer|min:1|max:100',
             'category_id' => 'nullable|exists:categories,id',
             'search' => 'nullable|string|max:255',
-            'sort_by' => 'nullable|in:price_acc, price_desc, latest',
+            'sort_by' => 'nullable|in:price_asc,price_desc,latest',
         ]);
 
         $query = Product::with('category');
