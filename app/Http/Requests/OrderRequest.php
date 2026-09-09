@@ -36,7 +36,7 @@ class OrderRequest extends FormRequest
                 'required',
                 'exists:products,id',
             ],
-            'item.*.quantity' => [
+            'items.*.quantity' => [
                 'required',
                 'integer',
                 'min:1',
